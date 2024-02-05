@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:scroll/models/activite.dart';
 
-class ListViewPage extends StatefulWidget {
-  const ListViewPage({super.key});
+class GridViewPage extends StatefulWidget {
+  const GridViewPage({super.key});
 
   @override
-  State<ListViewPage> createState() => _ListViewPageState();
+  State<GridViewPage> createState() => _ListViewPageState();
 }
 
-class _ListViewPageState extends State<ListViewPage> {
+class _ListViewPageState extends State<GridViewPage> {
   List<Activite> activites = [
     Activite(nom: "Vélo", icone: Icons.directions_bike),
     Activite(nom: "Peinture", icone: Icons.palette),
@@ -61,7 +61,6 @@ class _ListViewPageState extends State<ListViewPage> {
         scrollController.position.maxScrollExtent * 0.95) {
       print("JE suis à 95% du scroll, Appel API de la page x+1");
       print("setState pour refresh la vue");
-
     }
   }
 
@@ -69,20 +68,15 @@ class _ListViewPageState extends State<ListViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("ListView"),
+        title: Text("GridView"),
       ),
       body: Scrollbar(
         thickness: 10,
-        child: ListView.separated(
+        child: GridView.builder(
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
             controller: scrollController,
             itemCount: activites.length,
-            separatorBuilder: (context, index) {
-              if (index % 10 == 0 && index != 0) {
-                return Container(height: 100, color: Colors.red);
-              } else {
-                return Divider();
-              }
-            },
             itemBuilder: (context, index) {
               Activite activite = activites[index];
               return Dismissible(
@@ -109,15 +103,10 @@ class _ListViewPageState extends State<ListViewPage> {
                   });
                 },
                 key: Key(activite.nom),
-                child: ListTile(
-                  title: Text("Activité"),
-                  subtitle: Text(activite.nom),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  leading: Icon(activite.icone),
-                  onTap: () {
-                    print(activite.nom);
-                    //Une navigation vers une nouvelle page
-                  },
+                child: GridTile(
+                  header: Text("Activité", textAlign: TextAlign.center,),
+                  footer: Text(activite.nom,textAlign: TextAlign.center),
+                  child: Icon(activite.icone, size: 40,),
                 ),
               );
             }),
